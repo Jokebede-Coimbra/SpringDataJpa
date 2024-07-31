@@ -1,5 +1,6 @@
 package com.bookstore.jpa.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,11 +27,13 @@ public class BookModel implements Serializable {
     @Column(nullable = false, unique = true)
     private String title;
 
-    @ManyToOne // Muitos livros para uma editora
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(fetch = FetchType.LAZY)// Muitos livros para uma editora
     @JoinColumn(name = "publisher") // especificar a chave estrangeira relacionado a tabela publisher
     private PublisherModel publisher;
 
-    @ManyToMany
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "tb_book_author",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -38,6 +41,7 @@ public class BookModel implements Serializable {
     private Set<AuthorModel> authors = new HashSet<>();
 
     // O book referencia esse mapeamento
-    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL) //Replicado para os relacionamernstos que estiverem considerando essa cascata
+    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL)
+    //Replicado para os relacionamernstos que estiverem considerando essa cascata
     private ReviewModel review;
 }

@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +21,10 @@ public class BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
+
+    public List<BookModel> getAllBooks() {
+        return bookRepository.findAll();
+    }
 
     @Transactional
     public BookModel saveBook(BookRecordDto bookRecordDto) {
@@ -34,4 +40,10 @@ public class BookService {
 
         return bookRepository.save(book);
     }
+
+    @Transactional
+    public void deleteBook(UUID id) {
+        bookRepository.deleteById(id);
+    }
+
 }

@@ -6,18 +6,32 @@ import com.bookstore.jpa.services.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/bookstore/books")
-public class BookControler {
+public class BookController {
 
     private final BookService bookService;
 
+    @GetMapping
+    public ResponseEntity<List<BookModel>> getAllBooks() {
+        return ResponseEntity.status(HttpStatus.OK).body(bookService.getAllBooks());
+    }
+
+    @PostMapping
     public ResponseEntity<BookModel> saveBook(@RequestBody BookRecordDto bookRecordDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.saveBook(bookRecordDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBook(@PathVariable UUID id) {
+        bookService.deleteBook(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Book deleted successfully.");
+
     }
 }
